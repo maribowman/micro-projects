@@ -26,8 +26,8 @@ void setup() {
 
 void loop() {
   sendSensorData();
-  delay(5000);
-//  delay(5*60*1000);
+//  delay(3000);
+  delay(5*60*1000);
 //  sleep(sleepMinutes);
 }
 
@@ -52,7 +52,6 @@ void startWifi() {
       sleep(5);
     }
   }
-
   Serial.println("wifi connected");
   Serial.print("ip address: ");
   Serial.println(WiFi.localIP());
@@ -63,20 +62,22 @@ void startWifi() {
  * post-request to send meteor data
  */
 void sendSensorData () {
+  float temperature(NAN), humidity(NAN), heatindex(NAN);
 
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
-  float heatindex = dht.computeHeatIndex(temperature, humidity, false);
+  temperature = dht.readTemperature();
+  humidity = dht.readHumidity();
+  heatindex = dht.computeHeatIndex(temperature, humidity, false);
 
   Serial.println("---");
   Serial.println("[DATA] temperature: " + String(temperature) + " °C");
   Serial.println ("[DATA] humidity: " + String(humidity) + " %");
-  Serial.println("[DATA] relativ: " + String(heatindex) + " °C");
+  Serial.println("[DATA] heatindex: " + String(heatindex) + " °C");
 
 
   String payload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
 //  String payload = "{temperature:" + String(temperature) + ",humidity:" + String(humidity) + ",pressure:" + String(pres) + "}";
   Serial.println("[HTTP] sending meteor data");
+  
   HTTPClient http;
   int httpCode = -1;
 
@@ -84,6 +85,9 @@ void sendSensorData () {
   Serial.println(url);
   Serial.print("[HTTP] payload: ");
   Serial.println(payload);
+
+  http.begin(url);
+  http.addHeader("Content-Type", contentType);
   httpCode = http.POST(payload);
   if (httpCode > 0) {
     Serial.printf("[HTTP] received status: %d\n", httpCode);
