@@ -9,8 +9,7 @@ import (
 var (
 	temperature float32
 	humidity    float32
-	seen        = false
-	firstSeen   time.Time
+	firstSeen   = time.Now().Add(24 * time.Hour)
 	lastSeen    time.Time
 )
 
@@ -38,11 +37,10 @@ func (service *MeteorService) PostData(context *gin.Context) {
 	}
 	temperature = data.Temperature
 	humidity = data.Humidity
-	if !seen {
-		firstSeen = time.Now()
-		seen = true
-	}
 	lastSeen = time.Now()
+	if firstSeen.After(lastSeen) {
+		firstSeen = lastSeen
+	}
 	context.Status(http.StatusCreated)
 }
 
@@ -58,4 +56,11 @@ func (service *MeteorService) GetTimes(context *gin.Context) {
 		"lastSeen": lastSeen,
 		"uptime":   lastSeen.Sub(firstSeen).Hours(),
 	})
+}
+func (service *MeteorService) Reset(context *gin.Context) {
+	temperature = 0.0
+	humidity = 0.0
+	firstSeen = time.Now().Add(24 * time.Hour)
+	lastSeen = firstSeen
+	context.Status(http.StatusNoContent)
 }

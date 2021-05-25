@@ -23,6 +23,7 @@ func injectRouter(service MeteorService) *gin.Engine {
 	router.POST("/v1/meteor", service.PostData)
 	router.GET("/v1/meteor", service.GetData)
 	router.GET("/v1/times", service.GetTimes)
+	router.GET("/v1/reset", service.Reset)
 
 	return router
 }
