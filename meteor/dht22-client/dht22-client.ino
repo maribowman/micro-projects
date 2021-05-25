@@ -77,16 +77,11 @@ void sendSensorData () {
   String payload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
 //  String payload = "{temperature:" + String(temperature) + ",humidity:" + String(humidity) + ",pressure:" + String(pres) + "}";
   Serial.println("[HTTP] sending meteor data");
-  
+
+  WiFiClient client;
   HTTPClient http;
   int httpCode = -1;
-
-  Serial.print("[HTTP] url: ");
-  Serial.println(url);
-  Serial.print("[HTTP] payload: ");
-  Serial.println(payload);
-
-  http.begin(url);
+  http.begin(client, url);
   http.addHeader("Content-Type", contentType);
   httpCode = http.POST(payload);
   if (httpCode > 0) {
@@ -95,6 +90,7 @@ void sendSensorData () {
       Serial.println("[HTTP] result: OK.");
     }
   }
+  http.end();
 }
 
 /*

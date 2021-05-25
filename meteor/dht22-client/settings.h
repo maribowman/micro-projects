@@ -7,5 +7,5 @@ const char* d1Name = "balcony";
 int sleepMinutes = 15;
 
 // api settings
-const char* url = "http://192.168.178.22:4040/v1/meteor";
+const char* url = "http://192.168.178.49:4040/v1/meteor";
 const char* contentType = "application/json";
