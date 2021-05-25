@@ -75,7 +75,6 @@ void sendSensorData () {
 
 
   String payload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
-//  String payload = "{temperature:" + String(temperature) + ",humidity:" + String(humidity) + ",pressure:" + String(pres) + "}";
   Serial.println("[HTTP] sending meteor data");
 
   WiFiClient client;
