@@ -6,17 +6,16 @@
 
 #include "settings.h"
 
-ESP8266WiFiMulti WiFiMulti;
-
 #define FORCE_DEEPSLEEP
 #define DHT_TYPE DHT22
 int dataPinD4 = 2;
 
+ESP8266WiFiMulti WiFiMulti;
 DHT dht(dataPinD4, DHT_TYPE);
 
 void setup() {
   Serial.begin(115200);
-  delay(500);
+  delay(1000);
   Wire.begin();
   pinMode(dataPinD4, INPUT);
   dht.begin();
@@ -26,8 +25,7 @@ void setup() {
 
 void loop() {
   sendSensorData();
-//  delay(3000);
-  delay(5*60*1000);
+  delay(60*1000);
 //  sleep(sleepMinutes);
 }
 
@@ -70,11 +68,9 @@ void sendSensorData () {
 
   Serial.println("---");
   Serial.println("[DATA] temperature: " + String(temperature) + " °C");
-  Serial.println ("[DATA] humidity: " + String(humidity) + " %");
+  Serial.println("[DATA] humidity: " + String(humidity) + " %");
   Serial.println("[DATA] heatindex: " + String(heatindex) + " °C");
 
-
-  String payload = "{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}";
   Serial.println("[HTTP] sending meteor data");
 
   WiFiClient client;
@@ -82,12 +78,9 @@ void sendSensorData () {
   int httpCode = -1;
   http.begin(client, url);
   http.addHeader("Content-Type", contentType);
-  httpCode = http.POST(payload);
+  httpCode = http.POST("{\"temperature\":" + String(temperature) + ",\"humidity\":" + String(humidity) + "}");
   if (httpCode > 0) {
     Serial.printf("[HTTP] received status: %d\n", httpCode);
-    if (httpCode == HTTP_CODE_OK) {
-      Serial.println("[HTTP] result: OK.");
-    }
   }
   http.end();
 }
