@@ -64,12 +64,12 @@ void sendSensorData () {
 
   temperature = dht.readTemperature();
   humidity = dht.readHumidity();
-  heatindex = dht.computeHeatIndex(temperature, humidity, false);
+  heatIndex = dht.computeHeatIndex(temperature, humidity, false);
 
   Serial.println("---");
   Serial.println("[DATA] temperature: " + String(temperature) + " °C");
   Serial.println("[DATA] humidity: " + String(humidity) + " %");
-  Serial.println("[DATA] heatindex: " + String(heatindex) + " °C");
+  Serial.println("[DATA] heatIndex: " + String(heatIndex) + " °C");
 
   Serial.println("[HTTP] sending meteor data");
 
